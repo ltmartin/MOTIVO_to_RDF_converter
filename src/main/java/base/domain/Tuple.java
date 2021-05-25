@@ -9,11 +9,11 @@ public class Tuple {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2083)
     private String subject;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2083)
     private String predicate;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2083)
     private String object;
     @Column(nullable = false)
     private Integer motifId;

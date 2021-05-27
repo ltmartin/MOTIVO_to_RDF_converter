@@ -2,9 +2,10 @@ package base.domain;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-public class Tuple {
+public class Triple {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -15,18 +16,17 @@ public class Tuple {
     private String predicate;
     @Column(nullable = false, length = 2083)
     private String object;
-    @Column(nullable = false)
-    private Integer motifId;
 
-    public Tuple() {
+    @ManyToMany(mappedBy = "triples")
+    private Set<Motif> relatedMotifs;
+
+    public Triple() {
     }
 
-    public Tuple(Long id, String subject, String predicate, String object, Integer motifId) {
-        this.id = id;
+    public Triple(String subject, String predicate, String object) {
         this.subject = subject;
         this.predicate = predicate;
         this.object = object;
-        this.motifId = motifId;
     }
 
     public Long getId() {
@@ -61,24 +61,24 @@ public class Tuple {
         this.object = object;
     }
 
-    public Integer getMotifId() {
-        return motifId;
+    public Set<Motif> getRelatedMotifs() {
+        return relatedMotifs;
     }
 
-    public void setMotifId(Integer motifId) {
-        this.motifId = motifId;
+    public void setRelatedMotifs(Set<Motif> relatedMotifs) {
+        this.relatedMotifs = relatedMotifs;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tuple tuple = (Tuple) o;
-        return id.equals(tuple.id) && subject.equals(tuple.subject) && predicate.equals(tuple.predicate) && object.equals(tuple.object) && motifId.equals(tuple.motifId);
+        Triple triple = (Triple) o;
+        return id.equals(triple.id) && subject.equals(triple.subject) && predicate.equals(triple.predicate) && object.equals(triple.object);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, subject, predicate, object, motifId);
+        return Objects.hash(id, subject, predicate, object);
     }
 }

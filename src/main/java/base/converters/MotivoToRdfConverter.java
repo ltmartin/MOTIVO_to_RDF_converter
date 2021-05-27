@@ -5,9 +5,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Component
 @Lazy
@@ -22,6 +21,16 @@ public class MotivoToRdfConverter {
     public void convert(){
         try {
             loadReplacements();
+            File splitFolder = new File("split");
+            Queue<String> filenames = new ConcurrentLinkedQueue<>();
+            filenames.addAll(Arrays.asList(splitFolder.list()));
+
+            while (!filenames.isEmpty()) {
+                String fileToProcess = filenames.poll();
+                FileProcessor processor = new FileProcessor(fileToProcess, replacementsMap);
+                processor.run();
+            }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

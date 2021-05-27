@@ -29,4 +29,9 @@ class MotivoToRdfConverterTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    void convert() {
+        converter.convert();
+    }
 }

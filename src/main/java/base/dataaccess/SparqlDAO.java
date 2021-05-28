@@ -25,11 +25,10 @@ public class SparqlDAO {
     public Set<Triple> getTriplesWithNodePlayingRole(String node, byte role){
         Set<Triple> results = new HashSet<>();
         String query = "";
-        String sparqlCompatibleNode = SparqlUtils.getSparqlCompatibleString(node);
         if (ROLE_SUBJECT == role){
-            query = "SELECT ?p ?o WHERE {"+ sparqlCompatibleNode +" ?p ?o}";
+            query = "SELECT ?p ?o WHERE {"+ node +" ?p ?o}";
         } else if (ROLE_OBJECT == role)
-            query = "SELECT ?s ?p WHERE {?s ?p "+ sparqlCompatibleNode +"}";
+            query = "SELECT ?s ?p WHERE {?s ?p "+ node +"}";
 
         try (QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, query)) {
             ResultSet rs = qexec.execSelect();
@@ -40,10 +39,10 @@ public class SparqlDAO {
                 String subject = null, object = null;
                 String predicate = row.get("?p").toString();
                 if (ROLE_SUBJECT == role){
-                    subject = sparqlCompatibleNode;
+                    subject = node;
                     object = row.get("?o").toString();
                 } else if (ROLE_OBJECT == role){
-                    object = sparqlCompatibleNode;
+                    object = node;
                     subject = row.get("?s").toString();
                 }
 

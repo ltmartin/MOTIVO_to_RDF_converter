@@ -1,5 +1,7 @@
 package base.domain;
 
+import base.dataaccess.utils.SparqlUtils;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
@@ -74,11 +76,11 @@ public class Triple {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Triple triple = (Triple) o;
-        return id.equals(triple.id) && subject.equals(triple.subject) && predicate.equals(triple.predicate) && object.equals(triple.object);
+        return SparqlUtils.getCanonicalString(subject).equals(SparqlUtils.getCanonicalString(triple.subject)) && predicate.equals(triple.predicate) && SparqlUtils.getCanonicalString(object).equals(SparqlUtils.getCanonicalString(triple.object));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, subject, predicate, object);
+        return Objects.hash(SparqlUtils.getCanonicalString(subject), predicate, SparqlUtils.getCanonicalString(object));
     }
 }

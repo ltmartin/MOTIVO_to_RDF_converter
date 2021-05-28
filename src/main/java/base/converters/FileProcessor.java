@@ -1,7 +1,12 @@
 package base.converters;
 
 import base.dataaccess.SparqlDAO;
+import base.dataaccess.repository.MotifRepository;
+import base.dataaccess.utils.SparqlUtils;
+import base.domain.Motif;
 import base.domain.Triple;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.BufferedReader;
@@ -18,12 +23,15 @@ public class FileProcessor extends Thread{
     private String filename;
     private ConcurrentMap<Integer, String> replacementsMap;
 
-    @Resource
     private SparqlDAO sparqlDAO;
+    private MotifRepository motifRepository;
 
-    public FileProcessor(String filename, ConcurrentMap<Integer, String> replacementsMap) {
+
+    public FileProcessor(String filename, ConcurrentMap<Integer, String> replacementsMap, SparqlDAO sparqlDAO, MotifRepository motifRepository) {
         this.filename = filename;
         this.replacementsMap = replacementsMap;
+        this.sparqlDAO = sparqlDAO;
+        this.motifRepository = motifRepository;
     }
 
     @Override
@@ -39,14 +47,30 @@ public class FileProcessor extends Thread{
                 List<String> nodes = new LinkedList<>();
                 for (String nodeNumericalId : values) {
                     String originalNode = replacementsMap.get(Integer.parseInt(nodeNumericalId));
-                    nodes.add(originalNode);
+                    nodes.add(SparqlUtils.getSparqlCompatibleString(originalNode));
                 }
 
+                Motif motif = new Motif();
                 for (String node : nodes) {
                     Set<Triple> triplesWithNodeAsSubject = sparqlDAO.getTriplesWithNodePlayingRole(node, SparqlDAO.ROLE_SUBJECT);
                     Set<Triple> triplesWithNodeAsObject = sparqlDAO.getTriplesWithNodePlayingRole(node, SparqlDAO.ROLE_OBJECT);
-                    // TODO: Continue here.
+
+                    for (String adjacentNode: nodes) {
+                        if (node.equals(adjacentNode))
+                            continue;
+
+                        triplesWithNodeAsSubject.parallelStream().forEach(ts -> {
+                            if (SparqlUtils.getSparqlCompatibleString(ts.getObject()).equals(adjacentNode))
+                                motif.addTriple(ts);
+                        });
+
+                        triplesWithNodeAsObject.parallelStream().forEach(to -> {
+                            if (SparqlUtils.getSparqlCompatibleString(to.getSubject()).equals(adjacentNode))
+                                motif.addTriple(to);
+                        });
+                    }
                 }
+                motifRepository.save(motif);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -54,6 +78,5 @@ public class FileProcessor extends Thread{
             e.printStackTrace();
         }
     }
-
 
 }

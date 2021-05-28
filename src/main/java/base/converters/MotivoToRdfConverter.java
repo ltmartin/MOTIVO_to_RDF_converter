@@ -1,8 +1,11 @@
 package base.converters;
 
+import base.dataaccess.SparqlDAO;
+import base.dataaccess.repository.MotifRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -13,6 +16,10 @@ import java.util.concurrent.*;
 public class MotivoToRdfConverter {
 
     private ConcurrentMap<Integer, String> replacementsMap;
+    @Resource
+    private SparqlDAO sparqlDAO;
+    @Resource
+    private MotifRepository motifRepository;
 
     public MotivoToRdfConverter() {
         replacementsMap = new ConcurrentHashMap();
@@ -27,7 +34,7 @@ public class MotivoToRdfConverter {
 
             while (!filenames.isEmpty()) {
                 String fileToProcess = filenames.poll();
-                FileProcessor processor = new FileProcessor(fileToProcess, replacementsMap);
+                FileProcessor processor = new FileProcessor(fileToProcess, replacementsMap, sparqlDAO, motifRepository);
                 processor.run();
             }
 

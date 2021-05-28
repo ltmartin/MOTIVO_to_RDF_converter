@@ -1,6 +1,7 @@
 package base.domain;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -9,7 +10,7 @@ public class Motif {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "motif_triples",
             joinColumns = @JoinColumn(name = "motif_id"),
@@ -18,10 +19,15 @@ public class Motif {
     private Set<Triple> triples;
 
     public Motif() {
+        this.triples = new HashSet<>();
     }
 
     public Motif(Set<Triple> triples) {
         this.triples = triples;
+    }
+
+    public Boolean addTriple(Triple triple){
+        return this.triples.add(triple);
     }
 
     public Long getId() {

@@ -49,9 +49,11 @@ public class MotivoToRdfConverter {
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();
             int lastSpacePosition = line.lastIndexOf(" ");
-            String node = line.substring(0, lastSpacePosition);
-            Integer id = Integer.parseInt(line.substring(lastSpacePosition+1));
-            replacementsMap.put(id, node);
+            if (-1 != lastSpacePosition) {
+                String node = line.substring(0, lastSpacePosition);
+                Integer id = Integer.parseInt(line.substring(lastSpacePosition + 1));
+                replacementsMap.put(id, node);
+            }
         }
     }
 

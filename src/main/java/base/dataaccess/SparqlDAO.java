@@ -3,12 +3,14 @@ package base.dataaccess;
 import base.dataaccess.utils.SparqlUtils;
 import base.domain.Triple;
 import org.apache.jena.query.*;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +33,7 @@ public class SparqlDAO {
             query = "SELECT ?s ?p WHERE {?s ?p "+ node +"}";
 
         try (QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, query)) {
+            qexec.setTimeout(5, TimeUnit.MINUTES);
             ResultSet rs = qexec.execSelect();
             while (rs.hasNext()) {
                 QuerySolution row = rs.next();
@@ -50,9 +53,10 @@ public class SparqlDAO {
 
                 results.add(triple);
             }
-        } catch (QueryParseException e){
+        } catch (QueryParseException | QueryExceptionHTTP e){
             System.out.println("===============================================");
             logger.log(Level.SEVERE, "Error processing the query: \n" + query + "\n");
+            e.printStackTrace();
             System.out.println("===============================================");
         }
         return results;

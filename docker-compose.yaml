@@ -20,7 +20,7 @@ services:
     image: openlink/virtuoso-opensource-7:latest
     restart: always
     volumes:
-    - /home/leandro/Installations/virtuoso-opensource/database:/database
+    - virtuoso-database:/database
     ports:
     - "8890:8890"
 
@@ -33,10 +33,10 @@ services:
       POSTGRES_PASSWORD: example
       POSTGRES_USER: converter
     volumes:
-      - /tmp/converterDatabase:/var/lib/postgresql/data
+      - postgres-database:/var/lib/postgresql/data
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
+volumes:
+ postgres-database:
+   external: true
+ virtuoso-database:
+   external: true

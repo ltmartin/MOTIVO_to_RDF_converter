@@ -5,10 +5,11 @@ import org.apache.commons.validator.routines.UrlValidator;
 public class SparqlUtils {
 
     public static String getSparqlCompatibleString(String inputString) {
+        inputString = getCanonicalString(inputString);
         if ((inputString.startsWith("http://")) || (inputString.startsWith("https://")))
             return "<" + inputString + ">" ;
         else
-            return  "'" + inputString + "'";
+            return  "\"" + inputString + "\"";
     }
 
     public static String getCanonicalString(String inputString){

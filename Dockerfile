@@ -9,4 +9,4 @@ COPY src/main/resources/application.properties /converter/
 WORKDIR /converter
 RUN mkdir data
 VOLUME ["/converter/data"]
-#CMD ["java", "-jar", "MOTIVO_to_RDF_converter-1.0.jar"]
+CMD ["java", "-jar", "MOTIVO_to_RDF_converter-1.0.jar"]

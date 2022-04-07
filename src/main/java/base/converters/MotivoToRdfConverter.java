@@ -28,7 +28,7 @@ public class MotivoToRdfConverter {
     public void convert(){
         try {
             loadReplacements();
-            File splitFolder = new File("split");
+            File splitFolder = new File("data/split");
             Queue<String> filenames = new ConcurrentLinkedQueue<>();
             filenames.addAll(Arrays.asList(splitFolder.list()));
 
@@ -44,7 +44,7 @@ public class MotivoToRdfConverter {
     }
 
     public void loadReplacements() throws FileNotFoundException {
-        File replacementsFile = new File("replacements.txt");
+        File replacementsFile = new File("data/replacements.txt");
         Scanner scanner = new Scanner(replacementsFile);
         while (scanner.hasNextLine()){
             String line = scanner.nextLine();

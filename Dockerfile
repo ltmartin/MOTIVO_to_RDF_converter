@@ -7,5 +7,6 @@ RUN mkdir converter
 COPY target/MOTIVO_to_RDF_converter-1.0.jar /converter/
 COPY src/main/resources/application.properties /converter/
 WORKDIR /converter
-VOLUME ["/converter"]
+RUN mkdir data
+VOLUME ["/converter/data"]
 CMD ["java", "-jar", "MOTIVO_to_RDF_converter-1.0.jar"]

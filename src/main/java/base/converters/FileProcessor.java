@@ -40,7 +40,7 @@ public class FileProcessor extends Thread{
     }
 
     public void processFile(){
-        try (BufferedReader br = new BufferedReader(new FileReader("split/"+filename))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("data/split/"+filename))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(COMMA_DELIMITER);

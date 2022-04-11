@@ -35,7 +35,7 @@ public class MotivoToRdfConverter {
             while (!filenames.isEmpty()) {
                 String fileToProcess = filenames.poll();
                 FileProcessor processor = new FileProcessor(fileToProcess, replacementsMap, sparqlDAO, motifRepository);
-                processor.run();
+                processor.start();
             }
 
         } catch (FileNotFoundException e) {

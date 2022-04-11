@@ -27,7 +27,8 @@ services:
     - "8890:8890"
 
   postgres:
-    image: postgres:latest
+    image: postgres:14.2-alpine
+    command: postgres -c 'max_connections=200'
     restart: always
     ports:
     - 5432:5432

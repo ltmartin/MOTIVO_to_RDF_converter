@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "motif", schema = "public")
 public class Motif {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,6 +14,7 @@ public class Motif {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "motif_triples",
+            schema = "public",
             joinColumns = @JoinColumn(name = "motif_id"),
             inverseJoinColumns = @JoinColumn(name = "triple_id")
     )

@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name = "triple", schema = "public")
 public class Triple {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

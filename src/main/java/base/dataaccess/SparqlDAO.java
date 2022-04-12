@@ -32,33 +32,40 @@ public class SparqlDAO {
         } else if (ROLE_OBJECT == role)
             query = "SELECT ?s ?p WHERE {?s ?p "+ node +"}";
 
-        try (QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, query)) {
-            qexec.setTimeout(5, TimeUnit.MINUTES);
-            ResultSet rs = qexec.execSelect();
-            while (rs.hasNext()) {
-                QuerySolution row = rs.next();
+        boolean waitForConnection = false;
+        do {
+            try (QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, query)) {
+                qexec.setTimeout(5, TimeUnit.MINUTES);
+                ResultSet rs = qexec.execSelect();
+                while (rs.hasNext()) {
+                    QuerySolution row = rs.next();
 
-                Triple triple = null;
-                String subject = null, object = null;
-                String predicate = row.get("?p").toString();
-                if (ROLE_SUBJECT == role){
-                    subject = node;
-                    object = row.get("?o").toString();
-                } else if (ROLE_OBJECT == role){
-                    object = node;
-                    subject = row.get("?s").toString();
+                    Triple triple = null;
+                    String subject = null, object = null;
+                    String predicate = row.get("?p").toString();
+                    if (ROLE_SUBJECT == role) {
+                        subject = node;
+                        object = row.get("?o").toString();
+                    } else if (ROLE_OBJECT == role) {
+                        object = node;
+                        subject = row.get("?s").toString();
+                    }
+
+                    triple = new Triple(subject, predicate, object);
+
+                    results.add(triple);
+                    waitForConnection = false;
                 }
-
-                triple = new Triple(subject, predicate, object);
-
-                results.add(triple);
+            } catch (QueryParseException e) {
+                System.out.println("===============================================");
+                logger.log(Level.SEVERE, "Error processing the query: \n" + query + "\n");
+                e.printStackTrace();
+                System.out.println("===============================================");
+                waitForConnection = false;
+            } catch (QueryExceptionHTTP e) {
+                waitForConnection = true;
             }
-        } catch (QueryParseException | QueryExceptionHTTP e){
-            System.out.println("===============================================");
-            logger.log(Level.SEVERE, "Error processing the query: \n" + query + "\n");
-            e.printStackTrace();
-            System.out.println("===============================================");
-        }
+        } while (waitForConnection);
         return results;
     }
 }

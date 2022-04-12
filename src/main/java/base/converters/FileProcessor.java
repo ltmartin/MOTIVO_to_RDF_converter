@@ -5,6 +5,7 @@ import base.dataaccess.repository.MotifRepository;
 import base.dataaccess.utils.SparqlUtils;
 import base.domain.Motif;
 import base.domain.Triple;
+import org.springframework.boot.jdbc.DatabaseDriver;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 

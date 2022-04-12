@@ -4,8 +4,12 @@ import base.converters.MotivoToRdfConverter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.jdbc.DatabaseDriver;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.support.DatabaseStartupValidator;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 /**
  * @author Leandro Tabares Martín
